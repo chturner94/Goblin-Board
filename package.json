@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "postcss": "^8.4.29",
+    "postcss-plugin": "^1.0.0",
+    "precss": "^4.0.0",
+    "sugarss": "^4.0.1"
+  }
+}
