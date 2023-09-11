@@ -1,3 +1,9 @@
 build/bin
 node_modules
 frontend/dist
+.vscode
+frontend/wailsjs/go/app/App.d.ts
+frontend/wailsjs/go/app/App.js
+frontend/wailsjs/go/main/App.d.ts
+frontend/wailsjs/go/main/App.js
+package-lock.json

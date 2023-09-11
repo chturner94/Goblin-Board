@@ -1,4 +1,4 @@
-module github.com/chturner94/goblinBoard
+module github.com/chturner94/Goblin-Board
 
 go 1.18
 

@@ -5,20 +5,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 
-	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
-	"github.com/wailsapp/wails/v2/pkg/options/linux"
-	"github.com/wailsapp/wails/v2/pkg/options/mac"
-	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 // App struct
 type App struct {
-	ctx         context.Context
-	settings    *Settings
-	wailsConfig *options.App
+	Ctx         context.Context
+	Settings    *Settings
+	WailsConfig *options.App
 }
 
 // NewApp creates a new App application struct
@@ -28,8 +24,8 @@ func NewApp() *App {
 
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
+func (a *App) Startup(ctx context.Context) {
+	a.Ctx = ctx
 }
 
 // Greet returns a greeting for the given name
@@ -37,7 +33,7 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) shutdown(ctx context.Context) {
+func (a *App) Shutdown(ctx context.Context) {
 }
 
 type Settings struct {
@@ -46,12 +42,16 @@ type Settings struct {
 	ConfigPath       string `json:"configPath"`
 }
 
-func Init(assetDir string) *Settings {
-	return &Settings{
-		DefaultAssetsDir: assetDir,
-		ConfigPath:       "./settings.json",
-		Initialized:      false,
-	}
+func (a *App) InitSettings(appData string) {
+	a.Settings = &Settings{}
+
+	a.Settings.DefaultAssetsDir = "assetsData"
+	a.Settings.ConfigPath = filepath.Join(appData, "settings.json")
+	a.Settings.Initialized = false
+}
+
+func filepathJoin(appData, s string) {
+	panic("unimplemented")
 }
 
 func (s *Settings) WriteConfig() error {

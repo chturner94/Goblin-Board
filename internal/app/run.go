@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	appname = "GomblinBoard"
+	appname = "GoblinBoard"
 	assets  embed.FS
 )
 
@@ -23,10 +23,8 @@ func Run(app *App) error {
 		return err
 	}
 	defer crashlog(appData)
-	wails.Run(app.wailsConfig)
-	if err != nil {
-		println("Error:", err.Error)
-	}
+	wails.Run(app.WailsConfig)
+	app.InitSettings(appData)
 	return nil
 }
 
