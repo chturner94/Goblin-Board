@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -24,7 +25,16 @@ func Run(app *App) error {
 	}
 	defer crashlog(appData)
 	wails.Run(app.WailsConfig)
-	app.InitSettings(appData)
+	dir, err := os.Stat(filepath.Join(appData, "settings.json"))
+	if dir == fs.FileInfo(nil) {
+		println(err)
+		app.InitSettings(appData)
+		app.Settings.Initialized = true
+		app.Settings.WriteConfig()
+	} else {
+		app.loadSettings(appData)
+		err = nil
+	}
 	return nil
 }
 

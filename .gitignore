@@ -7,3 +7,9 @@ frontend/wailsjs/go/app/App.js
 frontend/wailsjs/go/main/App.d.ts
 frontend/wailsjs/go/main/App.js
 package-lock.json
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/modules.xml
+.idea/aws.xml
+.idea/Goblin-Board.iml
+.idea/sonarlint

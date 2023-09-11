@@ -67,3 +67,15 @@ func (s *Settings) WriteConfig() error {
 	}
 	return nil
 }
+
+func (a *App) loadSettings(appData string) error {
+	configFile := filepath.Join(appData, "settings.json")
+	if configFile, err := os.ReadFile(configFile); err != nil {
+		return err
+	} else {
+		if err := json.Unmarshal(configFile, a.Settings); err != nil {
+			return err
+		}
+		return nil
+	}
+}
