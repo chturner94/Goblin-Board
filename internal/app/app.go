@@ -37,9 +37,10 @@ func (a *App) Shutdown(ctx context.Context) {
 }
 
 type Settings struct {
-	Initialized      bool   `json:"initialized"`
-	DefaultAssetsDir string `json:"defaultAssetsDir"`
-	ConfigPath       string `json:"configPath"`
+	Initialized      bool   `json:"Initialized"`
+	DefaultAssetsDir string `json:"DefaultAssetsDir"`
+	ConfigPath       string `json:"ConfigPath"`
+	LoggingFile      string `json:"LoggingFile"`
 }
 
 func (a *App) InitSettings(appData string) {
