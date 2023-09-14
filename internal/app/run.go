@@ -33,12 +33,13 @@ func Run(app *App) error {
 		app.Settings.WriteConfig()
 	} else {
 		app.loadSettings(appData)
-		fmt.Printf("App: \n")
-		fmt.Printf(" CTX: %v\n", app.Ctx)
-		fmt.Printf(" Settings:\n")
-		fmt.Printf("    Initialized: %t\n", app.Settings.Initialized)
-		fmt.Printf("    DefaultAssetDir: %s\n", app.Settings.DefaultAssetsDir)
-		fmt.Printf("    ConfigPath: %s\n", app.Settings.ConfigPath)
+		logFile := app.Settings.LoggingFile
+		Log("App: \n", logFile)
+		Log(fmt.Sprintf(" CTX: %v\n", app.Ctx), logFile)
+		Log("  Settings:\n", logFile)
+		Log(fmt.Sprintf("    Initialized: %t\n", app.Settings.Initialized), logFile)
+		Log(fmt.Sprintf("    DefaultAssetDir: %s\n", app.Settings.DefaultAssetsDir), logFile)
+		Log(fmt.Sprintf("    ConfigPath: %s\n", app.Settings.ConfigPath), logFile)
 		err = nil
 	}
 	return nil

@@ -49,6 +49,7 @@ func (a *App) InitSettings(appData string) {
 	a.Settings.DefaultAssetsDir = "assetsData"
 	a.Settings.ConfigPath = filepath.Join(appData, "settings.json")
 	a.Settings.Initialized = false
+	a.Settings.LoggingFile = filepath.Join(appData, "goblin-board.txt")
 }
 
 func filepathJoin(appData, s string) {
