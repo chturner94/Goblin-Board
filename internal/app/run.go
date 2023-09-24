@@ -24,22 +24,17 @@ func Run(app *App) error {
 		return err
 	}
 	defer crashlog(appData)
-	wails.Run(app.WailsConfig)
+	wails.Run(&app.WailsConfig)
 	dir, err := os.Stat(filepath.Join(appData, "settings.json"))
 	if dir == fs.FileInfo(nil) {
 		println(err)
 		app.InitSettings(appData)
 		app.Settings.Initialized = true
 		app.Settings.WriteConfig()
+		app.WailsConfig.Logger.Info("New Settings file created, and written.")
 	} else {
 		app.loadSettings(appData)
-		logFile := app.Settings.LoggingFile
-		Log("App: \n", logFile)
-		Log(fmt.Sprintf(" CTX: %v\n", app.Ctx), logFile)
-		Log("  Settings:\n", logFile)
-		Log(fmt.Sprintf("    Initialized: %t\n", app.Settings.Initialized), logFile)
-		Log(fmt.Sprintf("    DefaultAssetDir: %s\n", app.Settings.DefaultAssetsDir), logFile)
-		Log(fmt.Sprintf("    ConfigPath: %s\n", app.Settings.ConfigPath), logFile)
+		app.WailsConfig.Logger.Info("Settings Loaded.")
 		err = nil
 	}
 	return nil

@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 
@@ -20,10 +21,10 @@ var (
 
 func main() {
 	// Create an instance of the app structure
-	NewAppInstance := app.NewApp()
+	newAppInstance := &app.App{}
 
 	err := app.Run(&app.App{
-		WailsConfig: &options.App{
+		WailsConfig: options.App{
 			Title:  title,
 			Width:  width,
 			Height: height,
@@ -31,9 +32,11 @@ func main() {
 				Assets: assets,
 			},
 			BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-			OnStartup:        NewAppInstance.Startup,
+			LogLevel:         logger.DEBUG,
+			OnStartup:        newAppInstance.Startup,
+			OnDomReady:       newAppInstance.OpenFileDirectory,
 			Bind: []interface{}{
-				NewAppInstance,
+				newAppInstance,
 			},
 		},
 	})

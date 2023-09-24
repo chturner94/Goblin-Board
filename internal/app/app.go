@@ -6,20 +6,17 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/wailsapp/wails/v2/pkg/options"
+	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
+	WailsConfig options.App
 	Ctx         context.Context
-	Settings    *Settings
-	WailsConfig *options.App
-}
-
-// NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
+	Settings    Settings
 }
 
 // startup is called when the app starts. The context is saved
@@ -33,18 +30,52 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) Shutdown(ctx context.Context) {
+func (a *App) OpenFileDirectory(ctx context.Context) (string, error) {
+	a.Ctx = ctx
+	userOS := runtime.GOOS
+	switch userOS {
+	case "linux":
+		{
+			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
+				Title:            "Open Directory",
+				DefaultDirectory: "/home/$USER",
+			})
+		}
+	case "windows":
+		{
+			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
+				Title:            "Open Directory",
+				DefaultDirectory: "C:\\Users\\$USER",
+			})
+		}
+	case "darwin":
+		{
+			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
+				Title:            "Open Directory",
+				DefaultDirectory: "/Users/$USER",
+			})
+		}
+	default:
+		{
+			return "", fmt.Errorf("unknown OS %s", userOS)
+		}
+	}
 }
 
+/*
+func (a *App) Shutdown(ctx context.Context) {
+}
+*/
+
 type Settings struct {
-	Initialized      bool   `json:"Initialized"`
 	DefaultAssetsDir string `json:"DefaultAssetsDir"`
 	ConfigPath       string `json:"ConfigPath"`
 	LoggingFile      string `json:"LoggingFile"`
+	Initialized      bool   `json:"Initialized"`
 }
 
 func (a *App) InitSettings(appData string) {
-	a.Settings = &Settings{}
+	a.Settings = Settings{}
 
 	a.Settings.DefaultAssetsDir = "assetsData"
 	a.Settings.ConfigPath = filepath.Join(appData, "settings.json")
@@ -72,6 +103,22 @@ func (s *Settings) WriteConfig() error {
 
 func (a *App) loadSettings(appData string) error {
 	configFile := filepath.Join(appData, "settings.json")
+	data, err := os.ReadFile(configFile)
+	if err != nil {
+		a.Settings = Settings{}
+		return err
+	}
+	var s Settings
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	a.Settings = s
+	return nil
+}
+
+/*
+func (a *App) loadSettings(appData string) error {
+	configFile := filepath.Join(appData, "settings.json")
 	if configFile, err := os.ReadFile(configFile); err != nil {
 		return err
 	} else {
@@ -81,3 +128,4 @@ func (a *App) loadSettings(appData string) error {
 		return nil
 	}
 }
+*/
