@@ -1,6 +1,7 @@
 <script>
     import logo from "./assets/images/logo-universal.png";
     import { Greet } from "../wailsjs/go/app/App.js";
+    import { openFileDialog } from "./hooks.js";
 
     let resultText = "Please enter your name below 👇";
     let name;
@@ -22,6 +23,7 @@
             type="text"
         />
         <button class="btn" on:click={greet}>Greet</button>
+        <button class="btn" on:click={openFileDialog}>Select Directory</button>
     </div>
 </main>
 

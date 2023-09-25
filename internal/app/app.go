@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"github.com/wailsapp/wails/v2/pkg/options"
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -25,41 +24,33 @@ func (a *App) Startup(ctx context.Context) {
 	a.Ctx = ctx
 }
 
+func (a *App) DOMReady(ctx context.Context) {
+	wruntime.EventsOn(ctx, "openDirectoryDialog", func(optionalData ...interface{}) {
+		a.OpenFileDirectory()
+	})
+}
+
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
-func (a *App) OpenFileDirectory(ctx context.Context) (string, error) {
-	a.Ctx = ctx
-	userOS := runtime.GOOS
-	switch userOS {
-	case "linux":
-		{
-			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
-				Title:            "Open Directory",
-				DefaultDirectory: "/home/$USER",
-			})
-		}
-	case "windows":
-		{
-			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
-				Title:            "Open Directory",
-				DefaultDirectory: "C:\\Users\\$USER",
-			})
-		}
-	case "darwin":
-		{
-			return wruntime.OpenDirectoryDialog(ctx, wruntime.OpenDialogOptions{
-				Title:            "Open Directory",
-				DefaultDirectory: "/Users/$USER",
-			})
-		}
-	default:
-		{
-			return "", fmt.Errorf("unknown OS %s", userOS)
-		}
+func (a *App) OpenFileDirectory() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return
 	}
+	fileDialog, err := wruntime.OpenDirectoryDialog(a.Ctx, wruntime.OpenDialogOptions{
+		DefaultDirectory: homeDir,
+		Title:            "File Directory",
+	})
+	if err != nil {
+		return
+	}
+	if fileDialog == "" {
+		return
+	}
+	wruntime.EventsEmit(a.Ctx, "openDirectoryDialog_result", fileDialog)
 }
 
 /*
